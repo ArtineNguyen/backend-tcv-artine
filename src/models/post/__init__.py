@@ -16,7 +16,7 @@
 #     __tablename__ = 'comments'
 #     id = db.Column(db.Integer, primary_key=True)
 #     body = db.Column(db.String, nullable=False)
-#     user_id = db.Column(db.Integer, nullable=False)
+#     user_id = db.Column(db.Integer, nullable=False) 
 #     user = db.relationship(User)
 #     post_id = db.Column(db.Integer, nullable=False)
 #     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -24,6 +24,7 @@
 #         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())   
 
 # db.create_all()
+
 
 # @app.route('/posts/<id>', methods=['POST', 'GET'])
 # def single_post(id):
