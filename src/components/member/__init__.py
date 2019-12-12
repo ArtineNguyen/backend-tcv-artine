@@ -5,7 +5,8 @@ from flask_login import login_required, login_user, current_user, logout_user
 member_blueprint = Blueprint('members', __name__)
 import uuid
 from src import app, db
-
+from flask_mail import Message
+from itsdangerous import URLSafeTimedSerializer, URLSafeSerializer
 
 @member_blueprint.route('/login', methods=['POST', 'GET'])
 def login():
@@ -58,3 +59,50 @@ def get_user():
         "id": current_user.id,
         "email": current_user.email
     })
+
+@member_blueprint.route('/register', methods=['POST'])
+def register_user():
+    if request.method=='POST':
+
+        data = request.get_json()
+        print(data,"GHUJKL:HGJHKJ")
+        userEmail = data['email']
+        userPassword = data['password']
+        userName = data['name']
+        user = Member.query.filter_by(email = userEmail).first()
+        if user:
+            return jsonify({'message':'Email already exist!'})
+        else :
+            new_user = Member(email = userEmail, name = userName)
+            new_user.generate_password(userPassword)
+            db.session.add(new_user)
+            db.session.commit()
+            return jsonify({'message': 'You has sign up, please login!'})
+
+def send_email(token, email, name):
+    with app.app_context():
+        try:
+            msg = Message(subject="Reset your password from The Cancer Voice",
+                        sender=app.config.get("MAIL_USERNAME"), #sender email
+                        recipients=[email],
+                        body= f"Hi {name}! Thanks for comeback with us! To reset your email please enter the link : http://localhost:3000/new-password/?token=${token}")
+            mail.send(msg)
+        except Exception as err:
+            print(f'{err}')
+        else: print("success!")
+
+@member_blueprint.route('/forgot-password', methods = ['POST'])
+def get_password():
+    if request.method == 'POST':
+        data = request.get_json()
+        user = Member.query.filter_by(email = data['email']).first()
+        if not user:
+            return jsonify({'success': False,
+                            'wrong': 'Email does not exist'}
+            )
+        else:
+            s = URLSafeTimedSerializer(app.secret_key)
+            token = s.dumps(user.email, salt="RESET_PASSWORD")
+            send_email(token, user.email, user.name)
+            return jsonify({"success": True, 'right': 'Email has sent'})
+    return jsonify({'success': False, 'state': 'Please input your email'})

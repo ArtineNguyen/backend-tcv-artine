@@ -6,7 +6,7 @@ from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
 class Member(UserMixin, db.Model):
     __tablename__ = 'members'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False, unique=True)
+    name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(255))
 

@@ -1,16 +1,18 @@
-# from src import db
+from src import db
+from src.models.member import Member
 
-# class Post(db.Model):
-#     __tablename__ = 'posts'
-#     id = db.Column(db.Integer, primary_key=True)
-#     body = db.Column(db.String, nullable=False)
-#     user_id = db.Column(db.Integer, nullable=False)
-#     user = db.relationship(User)
-#     created_at = db.Column(db.DateTime, server_default=db.func.now())
-#     updated_at = db.Column(
-#         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
-#     image_url = db.Column(db.Text)
-#     view_count = db.Column(db.Integer)
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    body = db.Column(db.String, nullable=False)
+    # user_id = db.Column(db.Integer, nullable=False)
+    # user = db.relationship(Member)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(
+        db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    image_url = db.Column(db.Text)
+    view_count = db.Column(db.Integer)
 
 # class Comment(db.Model):
 #     __tablename__ = 'comments'

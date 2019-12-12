@@ -3,7 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
 from flask_cors import CORS
-
+from flask_mail import Mail
+import os
 app = Flask(__name__)
 app.config.from_object('config.Config')
 app.secret_key = "super"
@@ -12,7 +13,7 @@ db = SQLAlchemy(app)
 
 db.init_app(app)
 from src.components.cli import create_db
-from src.models import Member, Token, OAuth
+from src.models import Member, Token, OAuth, Post
 app.cli.add_command(create_db)
 
 migrate = Migrate(app, db)
@@ -23,6 +24,19 @@ login_manager = LoginManager(app)
 @login_manager.user_loader
 def load_user(id):
     return Member.query.get(id)
+
+
+mail_setting = {
+    "MAIL_SERVER": 'smtp.gmail.com',
+    "MAIL_PORT": 465,
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+    "MAIL_USERNAME": os.environ['EMAIL_USER'],
+    "MAIL_PASSWORD": os.environ['EMAIL_PASSWORD']
+}
+
+app.config.update(mail_setting)
+mail = Mail(app)
 
 @login_manager.request_loader
 def load_user_from_request(request):
@@ -36,6 +50,8 @@ def load_user_from_request(request):
 
 from src.components.member import member_blueprint
 app.register_blueprint(member_blueprint, url_prefix="/")
+from src.components.post import post_blueprint
+app.register_blueprint(post_blueprint, url_prefix="/post")
 
 from src.components.oauth import blueprint
 app.register_blueprint(blueprint, url_prefix="/loginfacebook")
