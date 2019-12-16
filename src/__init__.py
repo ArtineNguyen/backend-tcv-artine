@@ -50,8 +50,12 @@ def load_user_from_request(request):
 
 from src.components.member import member_blueprint
 app.register_blueprint(member_blueprint, url_prefix="/")
+
 from src.components.post import post_blueprint
 app.register_blueprint(post_blueprint, url_prefix="/post")
 
 from src.components.oauth import blueprint
 app.register_blueprint(blueprint, url_prefix="/loginfacebook")
+
+from src.components.event import event_blueprint
+app.register_blueprint(event_blueprint, url_prefix="/event")
