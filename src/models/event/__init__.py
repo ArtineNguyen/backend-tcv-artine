@@ -10,6 +10,7 @@ class Event(db.Model):
     dateEvent = db.Column(db.DateTime)
     image_url = db.Column(db.Text)
     view_count = db.Column(db.Integer)
+    comments = db.relationship("Comment", backref="event", lazy=True)
     def render(self):
         return{
             "id":self.id,
@@ -18,18 +19,7 @@ class Event(db.Model):
             "image":self.image_url,
             "view_count":self.view_count,
             "user_id": self.user_id,
-            "datetime": self.dateEvent
+            "datetime": self.dateEvent,
+            "comments": [comment.render() for comment in self.comments]
         }
 
-# class Comment_Event(db.Model):
-#     __tablename__ = 'comments_event'
-#     id = db.Column(db.Integer, primary_key=True)
-#     body = db.Column(db.String, nullable=False)
-#     user_id = db.Column(db.Integer, nullable=False) 
-#     user = db.relationship(Member)
-#     event_id = db.Column(db.Integer, nullable=False)
-#     created_at = db.Column(db.DateTime, server_default=db.func.now())
-#     updated_at = db.Column(
-#         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())   
-
-db.create_all()

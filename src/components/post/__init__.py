@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from src.models import Post
 from src import db
 from flask_login import login_required, login_user, current_user, logout_user
-
+from src.models.comment import Comment
 post_blueprint = Blueprint('posts', __name__)
 
 
@@ -56,22 +56,27 @@ def edit_post(id):
 @post_blueprint.route("/single-post/<id>")
 def single_post(id):
     singel = Post.query.filter_by(id = id).first()
-    return jsonify({'title': singel.title,
-                    'body': singel.body,
-                    'img': singel.image_url,
-                    "userid": singel.user_id
-                    })
+    return jsonify(singel.render())
 
 
-# @post_blueprint.route('/posts/<id>/comment', methods=['POST', 'GET'])
-# def comment_post(id):
-#     if request.method == 'POST':
-#         new_comment = Comment(user_id=current_user.id,
-#                             post_id=id, body=request.form['body'])
-#         db.session.add(new_comment_post)
-#         db.session.commit()
-#         return redirect(url_for('single_post', id=id, action='view'))
-#     return ('Comment Post here')
+@post_blueprint.route('/single-post/<id>/comment', methods=['POST', 'GET'])
+@login_required
+def comment_post(id):
+    if request.method == 'POST':
+        data = request.get_json()
+        new_comment = Comment(user_id=current_user.id,
+                            post_id=id, body=data['content'])
+        db.session.add(new_comment)
+        db.session.commit()
+        return jsonify({"status": "OK"})
 
+@post_blueprint.route('/comment/delete/<id>', methods=['DELETE'])
+@login_required
+def delete_comment(id):
+    if request.method == 'DELETE':
+        comment_need_to_delete = Comment.query.filter_by(id = id).first()
 
+        db.session.delete(comment_need_to_delete)
+        db.session.commit()
+        return jsonify({"success": True})
 

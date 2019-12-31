@@ -9,12 +9,20 @@ class Member(UserMixin, db.Model):
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(255))
+    comments = db.relationship("Comment", backref="author", lazy="dynamic")
+    post_id = db.relationship("Post", backref="author", lazy="dynamic")
 
     def generate_password(self, password):
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def get_data(self):
+        return {
+            "name": self.name,
+            "email": self.email
+        }
 
 class Token(db.Model):
     id = db.Column(db.Integer, primary_key=True)

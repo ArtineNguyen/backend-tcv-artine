@@ -12,12 +12,10 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 db = SQLAlchemy(app)
 
 db.init_app(app)
-from src.components.cli import create_db
-from src.models import Member, Token, OAuth, Post
-app.cli.add_command(create_db)
 
 migrate = Migrate(app, db)
 CORS(app)
+from src.models import Member, Token
 
 login_manager = LoginManager(app)
 
@@ -53,6 +51,9 @@ app.register_blueprint(member_blueprint, url_prefix="/")
 
 from src.components.post import post_blueprint
 app.register_blueprint(post_blueprint, url_prefix="/post")
+
+from src.components.post import post_blueprint
+app.register_blueprint(post_blueprint, url_prefix="/post/comment")
 
 from src.components.oauth import blueprint
 app.register_blueprint(blueprint, url_prefix="/loginfacebook")
