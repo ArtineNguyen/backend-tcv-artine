@@ -5,7 +5,7 @@ cffi==1.13.2
 chardet==3.0.4
 Click==7.0
 colored==1.4.0
-cryptography==2.8
+cryptography==3.2
 DateTime==4.3
 fire==0.2.1
 Flask==1.1.1
