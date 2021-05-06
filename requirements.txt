@@ -10,7 +10,7 @@ DateTime==4.3
 fire==0.2.1
 Flask==1.1.1
 Flask-Admin==1.5.4
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 Flask-Dance==3.0.0
 Flask-Login==0.4.1
 Flask-Mail==0.9.1
